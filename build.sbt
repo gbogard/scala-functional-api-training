@@ -19,7 +19,7 @@ lazy val infrastructure = project
       scalaTest,
       cats,
       catsEffect
-    ) ++ Circe.all ++ Database.all
+    ) ++ Circe.all ++ Database.all ++ Log.all
   ).settings({
     val databaseUser = sys.env.getOrElse("FRIENDS_DB_USER", "friends")
     val databaseName = sys.env.getOrElse("FRIENDS_DB_NAME", "friends")

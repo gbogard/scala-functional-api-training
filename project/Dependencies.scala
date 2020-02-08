@@ -39,4 +39,11 @@ object Dependencies {
     val all = Seq(doobieCore, doobieHikari, doobiePg, driver)
   }
 
+  object Log {
+    val logback = "ch.qos.logback" % "logback-classic" % "1.2.3"
+    val scalaLogging = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
+
+    val all = Seq(logback, scalaLogging)
+  }
+
 }
