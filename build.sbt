@@ -2,13 +2,31 @@ import Dependencies._
 
 ThisBuild / scalaVersion     := "2.13.1"
 ThisBuild / version          := "0.1.0-SNAPSHOT"
-ThisBuild / organization     := "com.example"
-ThisBuild / organizationName := "example"
+ThisBuild / organization     := "com.friends"
+ThisBuild / organizationName := "Friends"
 
-lazy val root = (project in file("."))
+lazy val domain = project
   .settings(
-    name := "scala-advanced-training",
-    libraryDependencies += scalaTest % Test
+    libraryDependencies ++= Seq(
+      cats,
+      scalaTest
+    )
   )
 
-// See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
+lazy val infrastructure = project
+  .settings(
+    libraryDependencies ++= Seq(
+      scalaTest,
+      cats
+    )
+  ).dependsOn(domain)
+
+lazy val application = project
+  .settings(
+    libraryDependencies ++= Seq(
+      scalaTest,
+      cats
+    )
+  ).dependsOn(domain, infrastructure)
+
+lazy val root = (project in file(".")).aggregate(domain, infrastructure, application)
