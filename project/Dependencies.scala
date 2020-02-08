@@ -13,7 +13,8 @@ object Dependencies {
     val blazeClient = "org.http4s" %% "http4s-blaze-client" % version
     val circeIntegration = "org.http4s" %% "http4s-circe" % version
 
-    val all: Seq[ModuleID] = Seq(dsl, blazeServer, blazeClient, circeIntegration)
+    val all: Seq[ModuleID] =
+      Seq(dsl, blazeServer, blazeClient, circeIntegration)
   }
 
   object Circe {
@@ -21,8 +22,21 @@ object Dependencies {
 
     val core = "io.circe" %% "circe-core" % version
     val generic = "io.circe" %% "circe-generic" % version
+    val genericExtras = "io.circe" %% "circe-generic-extras" % "0.12.2"
     val parser = "io.circe" %% "circe-parser" % version
 
-    val all: Seq[ModuleID] = Seq(core, generic, parser)
+    val all: Seq[ModuleID] = Seq(core, generic, parser, genericExtras)
   }
+
+  object Database {
+    private val doobieVersion = "0.8.8"
+
+    val doobieCore = "org.tpolecat" %% "doobie-core" % doobieVersion
+    val doobieHikari = "org.tpolecat" %% "doobie-hikari" % doobieVersion
+    val doobiePg = "org.tpolecat" %% "doobie-postgres" % doobieVersion
+    val driver = "org.postgresql" % "postgresql" % "42.2.10"
+
+    val all = Seq(doobieCore, doobieHikari, doobiePg, driver)
+  }
+
 }

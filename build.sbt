@@ -1,8 +1,8 @@
 import Dependencies._
 
-ThisBuild / scalaVersion     := "2.13.1"
-ThisBuild / version          := "0.1.0-SNAPSHOT"
-ThisBuild / organization     := "com.friends"
+ThisBuild / scalaVersion := "2.13.1"
+ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / organization := "com.friends"
 ThisBuild / organizationName := "Friends"
 
 lazy val domain = project
@@ -19,8 +19,22 @@ lazy val infrastructure = project
       scalaTest,
       cats,
       catsEffect
-    ) ++ Circe.all
-  ).dependsOn(domain)
+    ) ++ Circe.all ++ Database.all
+  ).settings({
+    val databaseUser = sys.env.getOrElse("FRIENDS_DB_USER", "friends")
+    val databaseName = sys.env.getOrElse("FRIENDS_DB_NAME", "friends")
+    val databaseHost = sys.env.getOrElse("FRIENDS_DB_HOST", "localhost")
+    val databasePort = sys.env.getOrElse("FRIENDS_DB_PORT", "5445")
+    val databasePassword = sys.env.getOrElse("FRIENDS_DB_PASSWORD", "secret")
+
+    Seq(
+      flywayUrl := s"jdbc:postgresql://$databaseHost:$databasePort/$databaseName",
+      flywayUser := databaseUser,
+      flywayPassword := databasePassword,
+    )
+  })
+  .enablePlugins(FlywayPlugin)
+  .dependsOn(domain)
 
 lazy val application = project
   .settings(

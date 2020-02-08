@@ -1,0 +1,10 @@
+version: "3"
+services:
+  db:
+    image: postgres:10
+    ports:
+      - "$FRIENDS_DB_PORT:5432"
+    environment:
+      POSTGRES_USER: "$FRIENDS_DB_USER"
+      POSTGRES_DB: "$FRIENDS_DB_NAME"
+      POSTGRES_PASSWORD: "$FRIENDS_DB_PASSWORD"
