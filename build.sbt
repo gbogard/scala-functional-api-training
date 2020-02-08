@@ -17,7 +17,8 @@ lazy val infrastructure = project
   .settings(
     libraryDependencies ++= Seq(
       scalaTest,
-      cats
+      cats,
+      catsEffect
     ) ++ Circe.all
   ).dependsOn(domain)
 
