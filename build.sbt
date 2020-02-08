@@ -18,15 +18,16 @@ lazy val infrastructure = project
     libraryDependencies ++= Seq(
       scalaTest,
       cats
-    )
+    ) ++ Circe.all
   ).dependsOn(domain)
 
 lazy val application = project
   .settings(
     libraryDependencies ++= Seq(
       scalaTest,
-      cats
-    )
+      cats,
+      catsEffect
+    ) ++ Circe.all ++ Http4s.all
   ).dependsOn(domain, infrastructure)
 
 lazy val root = (project in file(".")).aggregate(domain, infrastructure, application)
