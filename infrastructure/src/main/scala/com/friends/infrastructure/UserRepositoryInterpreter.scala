@@ -15,4 +15,10 @@ class UserRepositoryInterpreter(implicit xa: Transactor[IO]) extends UserReposit
        values (${user.id}, ${user.userName}, ${user.displayName}, ${user.bio}, $hashedPassword)
     """.update.run.transact(xa).as(user)
 
+  def isUserNameAvailable(userName: String): IO[Boolean] =
+    sql"select true from users where user_name = $userName limit 1"
+    .query.option.transact(xa) map {
+      case Some(_) => false
+      case None => true
+    }
 }

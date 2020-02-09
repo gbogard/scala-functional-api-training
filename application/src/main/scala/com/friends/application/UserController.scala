@@ -3,7 +3,7 @@ package com.friends.application
 import cats.effect.IO
 import com.friends.application.Serialization._
 import com.friends.application.commands.Signup
-import com.friends.domain.users.SignupError.BelowMinimumAge
+import com.friends.domain.users.SignupError.{BelowMinimumAge, UserNameAlreadyExists}
 import com.friends.domain.users.{UserRepository, UserService}
 import com.friends.domain.{Clock, IdGenerator, Passwords}
 import org.http4s._
@@ -31,6 +31,7 @@ object UserController {
         ).flatMap({
         case Right(user) => Ok(user)
         case Left(BelowMinimumAge) => BadRequest(s"You must be at least ${UserService.minimumAge} to sign up")
+        case Left(UserNameAlreadyExists) => Conflict("Username already exists")
       })
   }
 }

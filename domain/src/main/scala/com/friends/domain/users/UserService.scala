@@ -2,9 +2,10 @@ package com.friends.domain.users
 
 import java.time.{LocalDate, ZoneId}
 
+import cats.implicits._
 import cats.data.EitherT
 import cats.{Monad, MonadError}
-import com.friends.domain.users.SignupError.BelowMinimumAge
+import com.friends.domain.users.SignupError.{BelowMinimumAge, UserNameAlreadyExists}
 import com.friends.domain.{Clock, IdGenerator, Passwords}
 
 object UserService {
@@ -31,6 +32,10 @@ object UserService {
         if (isAboveMinAge) EitherT.rightT[F, SignupError](())
         else EitherT.leftT[F, Unit](BelowMinimumAge)
       }
+      _ <- EitherT(userRepository.isUserNameAvailable(userName) map {
+        case true => Right(())
+        case false => Left(UserNameAlreadyExists)
+      })
       id <- EitherT.right(idGenerator.generateUserId())
       hashedPassword <- EitherT.right(
         ME.fromTry(passwords.hashPassword(password))
