@@ -4,6 +4,7 @@ object Dependencies {
   val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8"
   val cats = "org.typelevel" %% "cats-core" % "2.0.0"
   val catsEffect = "org.typelevel" %% "cats-effect" % "2.1.1"
+  val bcrypt = "com.github.t3hnar" % "scala-bcrypt_2.13" % "4.1"
 
   object Http4s {
     private val version = "0.21.0-RC4"

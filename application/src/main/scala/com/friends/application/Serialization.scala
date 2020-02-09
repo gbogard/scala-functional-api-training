@@ -12,10 +12,12 @@ import org.http4s.circe._
 
 object Serialization {
 
-  implicit lazy val postEncoder: Encoder[Post] = deriveEncoder[Post]
-  implicit lazy val createPostDecoder: Decoder[CreatePost] = deriveDecoder[CreatePost]
-  implicit lazy val userIdCodec: Codec[User.Id] = deriveUnwrappedCodec[User.Id]
-  implicit lazy val postIdCodec: Codec[Post.Id] = deriveUnwrappedCodec[Post.Id]
+  implicit lazy val postEncoder: Encoder[Post] = deriveEncoder
+  implicit lazy val createPostDecoder: Decoder[CreatePost] = deriveDecoder
+  implicit lazy val userEncoder: Encoder[User] = deriveEncoder
+  implicit lazy val signupDecoder: Decoder[Signup] = deriveDecoder
+  implicit lazy val userIdCodec: Codec[User.Id] = deriveUnwrappedCodec
+  implicit lazy val postIdCodec: Codec[Post.Id] = deriveUnwrappedCodec
 
   // Derive an EntityDecoder for all types which have a circe decoder
   implicit def http4sDecoder[T: Decoder]: EntityDecoder[IO, T] = jsonOf[IO, T]

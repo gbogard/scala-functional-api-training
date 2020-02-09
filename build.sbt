@@ -18,7 +18,8 @@ lazy val infrastructure = project
     libraryDependencies ++= Seq(
       scalaTest,
       cats,
-      catsEffect
+      catsEffect,
+      bcrypt
     ) ++ Circe.all ++ Database.all ++ Log.all
   ).settings({
     val databaseUser = sys.env.getOrElse("FRIENDS_DB_USER", "friends")
