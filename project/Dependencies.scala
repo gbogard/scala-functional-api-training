@@ -2,6 +2,7 @@ import sbt._
 
 object Dependencies {
   val scalaTest = "org.scalatest" %% "scalatest" % "3.0.8"
+  val scalaMock = "org.scalamock" %% "scalamock" % "4.4.0"
   val cats = "org.typelevel" %% "cats-core" % "2.0.0"
   val catsEffect = "org.typelevel" %% "cats-effect" % "2.1.1"
   val bcrypt = "com.github.t3hnar" % "scala-bcrypt_2.13" % "4.1"

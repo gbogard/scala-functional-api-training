@@ -9,14 +9,14 @@ lazy val domain = project
   .settings(
     libraryDependencies ++= Seq(
       cats,
-      scalaTest
+      scalaTest % Test,
+      scalaMock % Test
     )
   )
 
 lazy val infrastructure = project
   .settings(
     libraryDependencies ++= Seq(
-      scalaTest,
       cats,
       catsEffect,
       bcrypt
@@ -40,7 +40,6 @@ lazy val infrastructure = project
 lazy val application = project
   .settings(
     libraryDependencies ++= Seq(
-      scalaTest,
       cats,
       catsEffect
     ) ++ Circe.all ++ Http4s.all
