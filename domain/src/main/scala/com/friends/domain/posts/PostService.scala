@@ -16,4 +16,7 @@ object PostService {
     )
     repository.storePost(post)
   }
+
+  def getUserPosts[F[_]](userId: User.Id)(implicit repository: PostRepository[F]): F[List[Post]] =
+    repository.getUserPosts(userId)
 }
