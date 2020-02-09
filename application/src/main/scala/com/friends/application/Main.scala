@@ -2,9 +2,10 @@ package com.friends.application
 
 import cats.data.Kleisli
 import cats.implicits._
-import cats.effect._
+import cats.effect.{ExitCode, IO, IOApp}
+import com.friends.domain.{Clock, IdGenerator}
 import com.friends.domain.posts.PostRepository
-import com.friends.infrastructure.{PostRepositoryInterpreter, Transactor}
+import com.friends.infrastructure.{ClockInterpreter, IdGeneratorInterpreter, PostRepositoryInterpreter, Transactor}
 import org.http4s._
 import org.http4s.dsl.io._
 import org.http4s.implicits._
@@ -16,6 +17,8 @@ object Main extends IOApp {
   override def run(args: List[String]): IO[ExitCode] = Transactor() use { implicit xa =>
 
     implicit val postRepository: PostRepository[IO] = new PostRepositoryInterpreter()
+    implicit val clock: Clock[IO] = ClockInterpreter
+    implicit val idGenerator: IdGenerator[IO] = IdGeneratorInterpreter
 
     val healthCheckRoutes: HttpRoutes[IO] = HttpRoutes.of[IO] {
       case GET -> Root => Ok("Friends Server is running!")
