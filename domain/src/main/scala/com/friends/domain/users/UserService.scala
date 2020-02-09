@@ -1,23 +1,42 @@
 package com.friends.domain.users
 
-import cats.implicits._
+import java.time.{LocalDate, ZoneId}
+
+import cats.data.EitherT
 import cats.{Monad, MonadError}
-import com.friends.domain.{IdGenerator, Passwords}
+import com.friends.domain.users.SignupError.BelowMinimumAge
+import com.friends.domain.{Clock, IdGenerator, Passwords}
 
 object UserService {
 
-  def signup[F[_]: Monad](userName: String,
-                          displayName: String,
-                          bio: Option[String],
-                          password: String,
+  val minimumAge = 13
+
+  def signup[F[_]: Monad](
+    userName: String,
+    displayName: String,
+    bio: Option[String],
+    password: String,
+    birthDate: LocalDate
   )(implicit idGenerator: IdGenerator[F],
     userRepository: UserRepository[F],
     passwords: Passwords,
-    ME: MonadError[F, Throwable]): F[User] =
+    clock: Clock[F],
+    ME: MonadError[F, Throwable]): EitherT[F, SignupError, User] =
     for {
-      id <- idGenerator.generateUserId()
-      hashedPassword <- ME.fromTry(passwords.hashPassword(password))
+      now <- EitherT.right(clock.now())
+      isAboveMinAge = now.isAfter(
+        birthDate.plusYears(minimumAge.toLong).atTime(0, 0).atZone(ZoneId.systemDefault()).toInstant
+      )
+      _ <- {
+        if (isAboveMinAge) EitherT.rightT[F, SignupError](())
+        else EitherT.leftT[F, Unit](BelowMinimumAge)
+      }
+      id <- EitherT.right(idGenerator.generateUserId())
+      hashedPassword <- EitherT.right(
+        ME.fromTry(passwords.hashPassword(password))
+      )
       user = User(id, userName, displayName, bio)
-      result <- userRepository.storeUser(user, hashedPassword)
+      result <- EitherT.right(userRepository.storeUser(user, hashedPassword))
     } yield result
+
 }
