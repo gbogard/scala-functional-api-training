@@ -3,6 +3,7 @@ package com.friends.application
 import cats.effect.IO
 import com.friends.application.Serialization._
 import com.friends.application.commands.Signup
+import com.friends.domain.activities.ActivityRepository
 import com.friends.domain.users.SignupError.{BelowMinimumAge, UserNameAlreadyExists}
 import com.friends.domain.users.{UserRepository, UserService}
 import com.friends.domain.{Clock, IdGenerator, Passwords}
@@ -11,7 +12,8 @@ import org.http4s.dsl.io._
 
 object UserController {
 
-  def routes(implicit repository: UserRepository[IO],
+  def routes(implicit userRepository: UserRepository[IO],
+             activityRepository: ActivityRepository[IO],
              idGenerator: IdGenerator[IO],
              passwords: Passwords,
              clock: Clock[IO]): HttpRoutes[IO] = HttpRoutes.of {

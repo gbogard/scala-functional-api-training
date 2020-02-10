@@ -5,6 +5,7 @@ import java.time.{LocalDate, ZoneId}
 import cats.implicits._
 import cats.data.EitherT
 import cats.{Monad, MonadError}
+import com.friends.domain.activities.{Activity, ActivityData, ActivityRepository}
 import com.friends.domain.users.SignupError.{BelowMinimumAge, UserNameAlreadyExists}
 import com.friends.domain.{Clock, IdGenerator, Passwords}
 
@@ -20,6 +21,7 @@ object UserService {
     birthDate: LocalDate
   )(implicit idGenerator: IdGenerator[F],
     userRepository: UserRepository[F],
+    activityRepository: ActivityRepository[F],
     passwords: Passwords,
     clock: Clock[F],
     ME: MonadError[F, Throwable]): EitherT[F, SignupError, User] =
@@ -36,12 +38,20 @@ object UserService {
         case true => Right(())
         case false => Left(UserNameAlreadyExists)
       })
-      id <- EitherT.right(idGenerator.generateUserId())
+      userId <- EitherT.right(idGenerator.generateUserId())
       hashedPassword <- EitherT.right(
         ME.fromTry(passwords.hashPassword(password))
       )
-      user = User(id, userName, displayName, bio)
+      user = User(userId, userName, displayName, bio)
       result <- EitherT.right(userRepository.storeUser(user, hashedPassword))
+      activityId <- EitherT.right(idGenerator.generateActivityId())
+      activity = Activity(
+        id = activityId,
+        createdAt = now,
+        userId = userId,
+        activityData = ActivityData.SignedUp
+      )
+      _ <- EitherT.right(activityRepository.storeActivity(activity))
     } yield result
 
 }

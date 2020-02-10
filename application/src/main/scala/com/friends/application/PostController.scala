@@ -8,6 +8,7 @@ import org.http4s._
 import org.http4s.dsl.io._
 import com.friends.domain.posts.{PostRepository, PostService}
 import com.friends.application.Serialization._
+import com.friends.domain.activities.ActivityRepository
 import com.friends.domain.{Clock, IdGenerator}
 import com.friends.domain.users.User
 
@@ -15,7 +16,8 @@ import scala.util.Try
 
 object PostController {
 
-  def routes(implicit repository: PostRepository[IO],
+  def routes(implicit postRepository: PostRepository[IO],
+             activityRepository: ActivityRepository[IO],
              clock: Clock[IO],
              idGenerator: IdGenerator[IO]): HttpRoutes[IO] = HttpRoutes.of {
     case req @ POST -> Root =>
