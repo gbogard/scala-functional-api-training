@@ -26,10 +26,11 @@ class ActivityRepositoryInterpreter(implicit xa: Transactor[IO]) extends Activit
       values(${activity.id}, ${activity.createdAt}, ${activity.userId}, ${activity.activityData})
     """.update.run.transact(xa).as(activity)
 
-  def getUserActivities(userId: User.Id): IO[Seq[Activity]] =
+  def getUserActivities(userId: User.Id): IO[List[Activity]] =
     sql"""
       select id, created_at, user_id, content from activities
       where user_id = $userId
+      order by created_at desc
     """.query[Activity].to[List].transact(xa)
 }
 

@@ -8,4 +8,6 @@ trait PostRepository[F[_]] {
 
   def getUserPosts(userId: User.Id): F[List[Post]]
 
+  def getPostById(id: Post.Id): F[Option[Post]]
+
 }

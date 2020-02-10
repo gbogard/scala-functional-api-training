@@ -6,5 +6,5 @@ trait ActivityRepository[F[_]] {
 
   def storeActivity(activity: Activity): F[Activity]
 
-  def getUserActivities(userId: User.Id): F[Seq[Activity]]
+  def getUserActivities(userId: User.Id): F[List[Activity]]
 }

@@ -23,4 +23,8 @@ class PostRepositoryInterpreter(implicit xa: Transactor[IO]) extends PostReposit
       where author_id = ${userId.value}
       order by created_at desc
     """.query[Post].to[List].transact(xa)
+
+  def getPostById(id: Post.Id): IO[Option[Post]] =
+    sql"select id, created_at, author_id, content from posts where id = ${id.value}"
+    .query[Post].option.transact(xa)
 }
